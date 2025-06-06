@@ -11,7 +11,7 @@ namespace ResgateAlerta.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Tags("Bairros")]
-    public class BairroController: ControllerBase
+    public class BairroController : ControllerBase
     {
         private readonly ResgateAlertaContext _context;
 
@@ -111,7 +111,7 @@ namespace ResgateAlerta.Controllers
                 return NotFound();
 
             bairro.AtualizarBairro(request.Nome, request.IdCidade);
-            
+
 
             await _context.SaveChangesAsync();
 

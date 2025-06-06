@@ -1,15 +1,15 @@
-﻿using ResgateAlerta.DTO.Request;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using ResgateAlerta.DTO.Request;
+using ResgateAlerta.DTO.Response;
 using ResgateAlerta.DTO.Response;
 using ResgateAlerta.Infrastructure.Contexts;
 using ResgateAlerta.Infrastructure.Persistence;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ResgateAlerta.DTO.Response;
 using ResgateAlerta.Infrastructure.Persistence;
+using ResgateAlerta_API.DTO.Request;
 using System.Net;
 
-
-namespace EcoDenuncia.Controllers
+namespace ResgateAlerta.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -251,6 +251,3 @@ namespace EcoDenuncia.Controllers
         }
     }
 }
-
-
-

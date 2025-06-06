@@ -62,7 +62,7 @@ namespace ResgateAlerta.Infrastructure.Persistence
                 throw new Exception("Senha deve ter no máximo 100 caracteres.");
         }
 
-        
+
 
         internal static Usuario Create(string nome, string email, string senha, TipoUsuario tipoUsuario = TipoUsuario.USER)
         {
@@ -71,3 +71,4 @@ namespace ResgateAlerta.Infrastructure.Persistence
     }
 
 }
+

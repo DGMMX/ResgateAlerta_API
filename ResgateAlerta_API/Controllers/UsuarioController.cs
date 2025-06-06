@@ -12,7 +12,7 @@ namespace ResgateAlerta.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Tags("Usuários")]
-    public class UsuarioController: ControllerBase
+    public class UsuarioController : ControllerBase
     {
         private readonly ResgateAlertaContext _context;
 

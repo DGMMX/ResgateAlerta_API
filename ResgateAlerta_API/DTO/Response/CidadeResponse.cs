@@ -1,6 +1,6 @@
 ﻿namespace ResgateAlerta.DTO.Response
 {
-    public class CidadeRequest
+    public class CidadeResponse
     {
         public Guid IdCidade { get; set; } // ID da cidade
         public string Nome { get; set; } // Nome da cidade

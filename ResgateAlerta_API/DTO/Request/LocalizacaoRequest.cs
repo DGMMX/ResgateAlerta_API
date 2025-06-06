@@ -7,6 +7,6 @@
         public string Complemento { get; set; }
         public string Cep { get; set; }
         public Guid IdBairro { get; set; } // ID do bairro relacionado
-        
+
     }
 }

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ResgateAlerta.Infrastructure.Mappings
 {
-    public class LocalizacaoMapping: IEntityTypeConfiguration<Localizacao>
+    public class LocalizacaoMapping : IEntityTypeConfiguration<Localizacao>
     {
         public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Localizacao> builder)
         {
@@ -23,7 +23,7 @@ namespace ResgateAlerta.Infrastructure.Mappings
                 .HasMaxLength(100)
                 .IsRequired();
 
-            builder 
+            builder
                 .Property(l => l.Numero)
                 .HasColumnName("numero")
                 .HasMaxLength(10)

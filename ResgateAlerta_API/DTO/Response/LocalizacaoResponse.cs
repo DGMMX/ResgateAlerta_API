@@ -1,7 +1,6 @@
 ﻿namespace ResgateAlerta.DTO.Response
 {
-    public class LocalizacaoRequest
-    {
+    public class LocalizacaoResponse
     {
         public Guid IdLocalizacao { get; set; } // ID da localização
         public string Logradouro { get; set; } // Logradouro da localização

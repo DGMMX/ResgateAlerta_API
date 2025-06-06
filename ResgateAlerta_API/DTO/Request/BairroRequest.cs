@@ -6,3 +6,4 @@
         public Guid IdCidade { get; set; } // ID do cidade relacionada
     }
 }
+

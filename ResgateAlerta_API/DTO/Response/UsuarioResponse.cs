@@ -1,11 +1,11 @@
 ﻿namespace ResgateAlerta.DTO.Response
 {
-    public class UsuarioRequest
+    public class UsuarioResponse
     {
         public Guid IdUsuario { get; set; }
         public string Nome { get; set; }
         public string Email { get; set; }
-        public string TipoUsuario { get; set; } 
+        public string TipoUsuario { get; set; }
 
     }
 }

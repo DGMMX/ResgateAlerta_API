@@ -7,61 +7,50 @@ namespace ResgateAlerta.Infrastructure.Persistence
     {
         public Guid IdEstado { get; private set; }
         public string Nome { get; private set; }
-        public string Sigla { get; private set; }
+        public string Uf { get; private set; }
 
-        // relacionamento com Cidade
+        // relacionanmento com Cidade 
         public ICollection<Cidade> Cidades { get; private set; } = new List<Cidade>();
 
-        // relacionamento com Bairro
-        public ICollection<Bairro> Bairros { get; private set; } = new List<Bairro>();
-
-        // relacionamento com Localizacao
-        public ICollection<Localizacao> Localizacoes { get; private set; } = new List<Localizacao>();
-
-        public Estado(string nome, string sigla)
+        public Estado(string nome, string uf)
         {
             ValidarNome(nome);
-            ValidarSigla(sigla);
+            ValidarUf(uf);
+
             IdEstado = Guid.NewGuid();
             Nome = nome;
-            Sigla = sigla;
+            Uf = uf;
         }
+
+        public void AtualizarEstado(string nome, string uf)
+        {
+            ValidarNome(nome);
+            ValidarUf(uf);
+            Nome = nome;
+            Uf = uf;
+        }
+
 
         private void ValidarNome(string nome)
         {
             if (string.IsNullOrWhiteSpace(nome))
-            {
-                throw new Exception("Nome não pode ser vazio.");
-            }
+                throw new Exception("Nome do estado não pode ser vazio.");
             if (nome.Length > 100)
-            {
-                throw new Exception("Nome deve ter no máximo 100 caracteres.");
-            }
+                throw new Exception("Nome do estado deve ter no máximo 100 caracteres.");
+
         }
 
-        private void ValidarSigla(string sigla)
+        private void ValidarUf(string uf)
         {
-            if (string.IsNullOrWhiteSpace(sigla))
-            {
-                throw new Exception("Sigla não pode ser vazia.");
-            }
-            if (sigla.Length != 2)
-            {
-                throw new Exception("Sigla deve ter exatamente 2 caracteres.");
-            }
+            if (string.IsNullOrWhiteSpace(uf))
+                throw new Exception("UF não pode ser vazia.");
+            if (uf.Length != 2)
+                throw new Exception("UF deve ter exatamente 2 caracteres.");
         }
 
-        public void AtualizarEstado(string nome, string sigla)
+        internal static Estado Create(string nome, string uf)
         {
-            ValidarNome(nome);
-            ValidarSigla(sigla);
-            Nome = nome;
-            Sigla = sigla;
-        }
-
-        internal static Estado Create(string nome, string sigla)
-        {
-            return new Estado(nome, sigla);
+            return new Estado(nome, uf);
         }
     }
 }

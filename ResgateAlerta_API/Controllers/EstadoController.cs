@@ -11,7 +11,7 @@ namespace ResgateAlerta.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Tags("Estados")]
-    public class EstadoController: ControllerBase
+    public class EstadoController : ControllerBase
     {
         private readonly ResgateAlertaContext _context;
 
@@ -161,3 +161,4 @@ namespace ResgateAlerta.Controllers
         }
     }
 }
+

@@ -6,74 +6,52 @@ namespace ResgateAlerta.Infrastructure.Persistence
     public class OrgaoPublico
     {
         public Guid IdOrgaoPublico { get; private set; }
-
-        // relacionamento com denuncia
-        public ICollection<Denuncia> Denuncias { get; private set; } = new List<Denuncia>();
-
         public string Nome { get; private set; }
-        public string Sigla { get; private set; }
-        public string Descricao { get; private set; }
 
-        public OrgaoPublico(string nome, string sigla, string descricao)
+        public string AreaAtuacao { get; private set; } // Área de atuação do órgão público
+
+        // relacionamento com Denuncia
+        public ICollection<Denuncia> Denuncias { get; private set; } = new List<Denuncia>();
+        public OrgaoPublico(string nome, string areaAtuacao)
         {
             ValidarNome(nome);
-            ValidarSigla(sigla);
-            ValidarDescricao(descricao);
+            ValidarAreaAtuacao(areaAtuacao);
+
             IdOrgaoPublico = Guid.NewGuid();
             Nome = nome;
-            Sigla = sigla;
-            Descricao = descricao;
+            AreaAtuacao = areaAtuacao.Trim();
+        }
+
+        public void AtualizarOrgaoPublico(string nome, string areaAtuacao)
+        {
+            ValidarNome(nome);
+            ValidarAreaAtuacao(areaAtuacao);
+
+            Nome = nome;
+            AreaAtuacao = areaAtuacao;
         }
 
         private void ValidarNome(string nome)
         {
             if (string.IsNullOrWhiteSpace(nome))
-            {
-                throw new Exception("Nome não pode ser vazio.");
-            }
-            if (nome.Length > 100)
-            {
-                throw new Exception("Nome deve ter no máximo 100 caracteres.");
-            }
+                throw new Exception("Nome do órgão público não pode ser vazio.");
+            if (nome.Length > 150)
+                throw new Exception("Nome do órgão público deve ter no máximo 150 caracteres.");
+
         }
 
-        private void ValidarSigla(string sigla)
+        private void ValidarAreaAtuacao(string areaAtuacao)
         {
-            if (string.IsNullOrWhiteSpace(sigla))
-            {
-                throw new Exception("Sigla não pode ser vazia.");
-            }
-            if (sigla.Length > 10)
-            {
-                throw new Exception("Sigla deve ter no máximo 10 caracteres.");
-            }
-        }
+            if (string.IsNullOrWhiteSpace(areaAtuacao))
+                throw new Exception("Área de atuação não pode ser vazia.");
+            if (areaAtuacao.Length > 100)
+                throw new Exception("Área de atuação deve ter no máximo 100 caracteres.");
 
-        private void ValidarDescricao(string descricao)
-        {
-            if (string.IsNullOrWhiteSpace(descricao))
-            {
-                throw new Exception("Descrição não pode ser vazia.");
-            }
-            if (descricao.Length > 250)
-            {
-                throw new Exception("Descrição deve ter no máximo 250 caracteres.");
-            }
         }
-
-        public void AtualizaOrgaoPublico(string nome, string sigla, string descricao)
+        internal static OrgaoPublico Create(string nome, string areaAtuacao)
         {
-            ValidarNome(nome);
-            ValidarSigla(sigla);
-            ValidarDescricao(descricao);
-            Nome = nome;
-            Sigla = sigla;
-            Descricao = descricao;
-        }
-
-        internal static OrgaoPublico Create(string nome, string sigla, string descricao)
-        {
-            return new OrgaoPublico(nome, sigla, descricao);
+            return new OrgaoPublico(nome, areaAtuacao);
         }
     }
 }
+

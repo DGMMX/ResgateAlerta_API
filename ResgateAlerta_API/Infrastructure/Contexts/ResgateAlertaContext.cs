@@ -1,6 +1,7 @@
-﻿using ResgateAlerta.Infrastructure.Mappings;
-using ResgateAlerta.Infrastructure.Persistence;
+﻿using EcoDenuncia.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using ResgateAlerta.Infrastructure.Mappings;
+using ResgateAlerta.Infrastructure.Persistence;
 using System.Data.Common;
 
 namespace ResgateAlerta.Infrastructure.Contexts

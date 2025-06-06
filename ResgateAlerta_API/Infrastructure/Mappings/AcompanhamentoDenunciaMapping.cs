@@ -1,6 +1,7 @@
-﻿using ResgateAlerta.Infrastructure.Persistence;
+﻿using EcoDenuncia.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using ResgateAlerta.Infrastructure.Persistence;
 
 namespace ResgateAlerta.Infrastructure.Mappings
 {
