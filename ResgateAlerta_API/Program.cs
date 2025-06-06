@@ -27,8 +27,8 @@ namespace ResgateAlerta
                     Description = "API para o sistema ResgateAlerta",
                     Contact = new OpenApiContact
                     {
-                        Name = "Suporte",
-                        Email = "suporte@resgatealerta.com"
+                        Name = "Diego Bassalo",
+                        Email = "diegobassalo1@gmail.com"
                     }
                 });
             });
