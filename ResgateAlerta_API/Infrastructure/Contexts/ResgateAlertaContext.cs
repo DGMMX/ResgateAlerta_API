@@ -3,10 +3,9 @@ using ResgateAlerta.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
 
-
-namespace EcoDenuncia.Infrastructure.Contexts
+namespace ResgateAlerta.Infrastructure.Contexts
 {
-    public class EcoDenunciaContext(DbContextOptions<EcoDenunciaContext> options) : DbContext(options)
+    public class ResgateAlertaContext(DbContextOptions<ResgateAlertaContext> options) : DbContext(options)
     {
 
         public DbSet<Denuncia> Denuncias { get; set; }

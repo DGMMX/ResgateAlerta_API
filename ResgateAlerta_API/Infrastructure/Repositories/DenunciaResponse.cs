@@ -1,4 +1,4 @@
-﻿namespace ResgateAlerta_API.DTO.Request
+﻿namespace ResgateAlerta.DTO.Response
 {
     public class DenunciaResponse
     {

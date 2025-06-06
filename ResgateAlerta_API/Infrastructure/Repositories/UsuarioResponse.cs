@@ -1,6 +1,6 @@
 ﻿namespace ResgateAlerta.DTO.Response
 {
-    public class UsuarioRequest
+    public class UsuarioResponse
     {
         public Guid IdUsuario { get; set; }
         public string Nome { get; set; }

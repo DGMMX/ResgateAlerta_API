@@ -4,9 +4,12 @@ using ResgateAlerta.Infrastructure.Contexts;
 using ResgateAlerta.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ResgateAlerta.DTO.Response;
+using ResgateAlerta.Infrastructure.Persistence;
 using System.Net;
 
-namespace ResgateAlerta.Controllers
+
+namespace EcoDenuncia.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -41,19 +44,23 @@ namespace ResgateAlerta.Controllers
                     .ThenInclude(l => l.Bairro)
                         .ThenInclude(b => b.Cidade)
                             .ThenInclude(c => c.Estado)
-                .Select(d => new DenunciaResponse
-                {
-                    IdDenuncia = d.IdDenuncia,
-                    Titulo = d.Titulo,
-                    Descricao = d.Descricao,
-                    DataDenuncia = d.DataDenuncia,
-                    Status = d.Status,
-                    Usuario = d.Usuario.Nome,
-                    Localizacao = $"{d.Localizacao.Logradouro}, {d.Localizacao.Numero}",
-                    OrgaoPublico = d.OrgaoPublico.Nome
-                })
                 .ToListAsync();
-            return denuncias;
+
+            var denunciasDto = denuncias.Select(d => new DenunciaResponse
+            {
+                IdDenuncia = d.IdDenuncia,
+                DataHora = d.DataHora,
+                Descricao = d.Descricao,
+                NomeUsuario = d.Usuario?.Nome,
+                NomeOrgaoPublico = d.OrgaoPublico?.Nome,
+                Logradouro = d.Localizacao?.Logradouro,
+                Numero = d.Localizacao?.Numero,
+                Bairro = d.Localizacao?.Bairro?.Nome,
+                Cidade = d.Localizacao?.Bairro?.Cidade?.Nome,
+                Estado = d.Localizacao?.Bairro?.Cidade?.Estado?.Nome
+            }).ToList();
+
+            return Ok(denunciasDto);
         }
 
         /// <summary>
@@ -81,22 +88,25 @@ namespace ResgateAlerta.Controllers
                 .FirstOrDefaultAsync(d => d.IdDenuncia == id);
 
             if (denuncia == null)
-            {
                 return NotFound();
-            }
 
-            return new DenunciaResponse
+            var dto = new DenunciaResponse
             {
                 IdDenuncia = denuncia.IdDenuncia,
-                Titulo = denuncia.Titulo,
+                DataHora = denuncia.DataHora,
                 Descricao = denuncia.Descricao,
-                DataDenuncia = denuncia.DataDenuncia,
-                Status = denuncia.Status,
-                Usuario = denuncia.Usuario.Nome,
-                Localizacao = $"{denuncia.Localizacao.Logradouro}, {denuncia.Localizacao.Numero}",
-                OrgaoPublico = denuncia.OrgaoPublico.Nome
+                NomeUsuario = denuncia.Usuario?.Nome,
+                NomeOrgaoPublico = denuncia.OrgaoPublico?.Nome,
+                Logradouro = denuncia.Localizacao?.Logradouro,
+                Numero = denuncia.Localizacao?.Numero,
+                Bairro = denuncia.Localizacao?.Bairro?.Nome,
+                Cidade = denuncia.Localizacao?.Bairro?.Cidade?.Nome,
+                Estado = denuncia.Localizacao?.Bairro?.Cidade?.Estado?.Nome
             };
+
+            return Ok(dto);
         }
+
 
         /// <summary>
         /// Cria uma nova denúncia no sistema
@@ -121,35 +131,28 @@ namespace ResgateAlerta.Controllers
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<ActionResult<DenunciaResponse>> PostDenuncia(DenunciaRequest request)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var usuario = await _context.Usuarios.FindAsync(request.IdUsuario);
+            if (usuario == null) return BadRequest("Usuário não encontrado.");
+
             var localizacao = await _context.Localizacoes.FindAsync(request.IdLocalizacao);
-            var orgaoPublico = await _context.OrgaosPublicos.FindAsync(request.IdOrgaoPublico);
+            if (localizacao == null) return BadRequest("Localização não encontrada.");
 
-            if (usuario == null || localizacao == null || orgaoPublico == null)
-            {
-                return BadRequest("Usuário, Localização ou Órgão Público não encontrado.");
-            }
+            var orgao = await _context.OrgaosPublicos.FindAsync(request.IdOrgaoPublico);
+            if (orgao == null) return BadRequest("Órgão público não encontrado.");
 
-            var denuncia = Denuncia.Create(usuario, localizacao, orgaoPublico, request.Titulo, request.Descricao);
+            var denuncia = Denuncia.Create(request.IdUsuario, request.IdLocalizacao, request.IdOrgaoPublico, request.DataHora, request.Descricao);
+
             _context.Denuncias.Add(denuncia);
             await _context.SaveChangesAsync();
 
-            return new DenunciaResponse
+            var response = new DenunciaResponse
             {
                 IdDenuncia = denuncia.IdDenuncia,
-                Titulo = denuncia.Titulo,
-                Descricao = denuncia.Descricao,
-                DataDenuncia = denuncia.DataDenuncia,
-                Status = denuncia.Status,
-                Usuario = usuario.Nome,
-                Localizacao = $"{localizacao.Logradouro}, {localizacao.Numero}",
-                OrgaoPublico = orgaoPublico.Nome
+                DataHora = denuncia.DataHora,
+                Descricao = denuncia.Descricao
             };
+
+            return CreatedAtAction(nameof(GetDenuncia), new { id = denuncia.IdDenuncia }, response);
         }
 
         /// <summary>
@@ -176,25 +179,53 @@ namespace ResgateAlerta.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> PutDenuncia(Guid id, DenunciaRequest request)
+        public async Task<ActionResult<DenunciaResponse>> PutDenuncia(Guid id, DenunciaRequest request)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var denuncia = await _context.Denuncias.FindAsync(id);
             if (denuncia == null)
-            {
                 return NotFound();
-            }
 
-            denuncia.AtualizarDenuncia(request.Titulo, request.Descricao, request.Status);
-            _context.Denuncias.Update(denuncia);
+            var usuario = await _context.Usuarios.FindAsync(request.IdUsuario);
+            if (usuario == null) return BadRequest("Usuário não encontrado.");
+
+            var localizacao = await _context.Localizacoes.FindAsync(request.IdLocalizacao);
+            if (localizacao == null) return BadRequest("Localização não encontrada.");
+
+            var orgao = await _context.OrgaosPublicos.FindAsync(request.IdOrgaoPublico);
+            if (orgao == null) return BadRequest("Órgão público não encontrado.");
+
+            denuncia.AtualizaDenuncia(request.IdUsuario, request.IdLocalizacao, request.IdOrgaoPublico, request.DataHora, request.Descricao);
+
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            //  includes necessários
+            var denunciaAtualizada = await _context.Denuncias
+                .Include(d => d.Usuario)
+                .Include(d => d.OrgaoPublico)
+                .Include(d => d.Localizacao)
+                    .ThenInclude(l => l.Bairro)
+                        .ThenInclude(b => b.Cidade)
+                            .ThenInclude(c => c.Estado)
+                .FirstOrDefaultAsync(d => d.IdDenuncia == id);
+
+            var response = new DenunciaResponse
+            {
+                IdDenuncia = denunciaAtualizada.IdDenuncia,
+                DataHora = denunciaAtualizada.DataHora,
+                Descricao = denunciaAtualizada.Descricao,
+                NomeUsuario = denunciaAtualizada.Usuario.Nome,
+                NomeOrgaoPublico = denunciaAtualizada.OrgaoPublico.Nome,
+                Logradouro = denunciaAtualizada.Localizacao.Logradouro,
+                Numero = denunciaAtualizada.Localizacao.Numero,
+                Bairro = denunciaAtualizada.Localizacao.Bairro.Nome,
+                Cidade = denunciaAtualizada.Localizacao.Bairro.Cidade.Nome,
+                Estado = denunciaAtualizada.Localizacao.Bairro.Cidade.Estado.Nome
+            };
+
+            return Ok(response);
         }
+
+
 
         /// <summary>
         /// Remove uma denúncia pelo Id
@@ -223,4 +254,3 @@ namespace ResgateAlerta.Controllers
 
 
 
-   
