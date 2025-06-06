@@ -6,31 +6,38 @@ namespace ResgateAlerta.Infrastructure.Persistence
     public class Denuncia
     {
         public Guid IdDenuncia { get; private set; }
-
-        // relacionamento com usuario
-        public Guid IdUsuario { get; private set; }
-        public Usuario Usuario { get; set; }
-
-        // relacionamento com localizacao
-        public Guid IdLocalizacao { get; private set; }
-        public Localizacao Localizacao { get; set; }
-
-        // relacionamento com orgão publico
-        public Guid IdOrgaoPublico { get; private set; }
-        public OrgaoPublico OrgaoPublico { get; set; }
-
-        public DateTime DataHora { get; private set; }
+        public required Usuario Usuario { get; set; }
+        public required Localizacao Localizacao { get; set; }
+        public required OrgaoPublico OrgaoPublico { get; set; }
+        public string Titulo { get; private set; }
         public string Descricao { get; private set; }
+        public DateTime DataDenuncia { get; private set; }
+        public string Status { get; private set; }
 
-        public Denuncia(Guid idUsuario, Guid idLocalizacao, Guid idOrgaoPublico, DateTime dataHora, string descricao)
+        public Denuncia(Usuario usuario, Localizacao localizacao, OrgaoPublico orgaoPublico, string titulo, string descricao)
         {
+            ValidarTitulo(titulo);
             ValidarDescricao(descricao);
             IdDenuncia = Guid.NewGuid();
-            IdUsuario = idUsuario;
-            IdLocalizacao = idLocalizacao;
-            IdOrgaoPublico = idOrgaoPublico;
-            DataHora = dataHora;
+            Usuario = usuario;
+            Localizacao = localizacao;
+            OrgaoPublico = orgaoPublico;
+            Titulo = titulo;
             Descricao = descricao;
+            DataDenuncia = DateTime.Now;
+            Status = "Pendente";
+        }
+
+        private void ValidarTitulo(string titulo)
+        {
+            if (string.IsNullOrWhiteSpace(titulo))
+            {
+                throw new Exception("Título não pode ser vazio.");
+            }
+            if (titulo.Length > 100)
+            {
+                throw new Exception("Título deve ter no máximo 100 caracteres.");
+            }
         }
 
         private void ValidarDescricao(string descricao)
@@ -39,25 +46,24 @@ namespace ResgateAlerta.Infrastructure.Persistence
             {
                 throw new Exception("Descrição não pode ser vazia.");
             }
-            if (descricao.Length > 250)
+            if (descricao.Length > 500)
             {
-                throw new Exception("Descrição deve ter no máximo 250 caracteres.");
+                throw new Exception("Descrição deve ter no máximo 500 caracteres.");
             }
         }
 
-        public void AtualizaDenuncia(Guid idUsuario, Guid idLocalizacao, Guid idOrgaoPublico, DateTime dataHora, string descricao)
+        public void AtualizarDenuncia(string titulo, string descricao, string status)
         {
-            IdUsuario = idUsuario;
-            IdLocalizacao = idLocalizacao;
-            IdOrgaoPublico = idOrgaoPublico;
-            DataHora = dataHora;
+            ValidarTitulo(titulo);
             ValidarDescricao(descricao);
+            Titulo = titulo;
             Descricao = descricao;
+            Status = status;
         }
 
-        internal static Denuncia Create(Guid idUsuario, Guid idLocalizacao, Guid idOrgaoPublico, DateTime dataHora, string descricao)
+        internal static Denuncia Create(Usuario usuario, Localizacao localizacao, OrgaoPublico orgaoPublico, string titulo, string descricao)
         {
-            return new Denuncia(idUsuario, idLocalizacao, idOrgaoPublico, dataHora, descricao);
+            return new Denuncia(usuario, localizacao, orgaoPublico, titulo, descricao);
         }
     }
 }

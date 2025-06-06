@@ -1,22 +1,16 @@
-﻿namespace ResgateAlerta.DTO.Response
+﻿using System;
+
+namespace ResgateAlerta_API.DTO.Response
 {
     public class DenunciaResponse
     {
         public Guid IdDenuncia { get; set; }
-        public DateTime DataHora { get; set; } // Data e hora da denúncia
-        public string Descricao { get; set; } // Descrição da denúncia
-
-        // informações relacionadas 
-        public string NomeUsuario { get; set; } // Nome do usuário que fez a denúncia
-        public string NomeOrgaoPublico { get; set; } // Nome do órgão público relacionado à denúncia
-        public string Logradouro { get; set; } // Logradouro da localização da denúncia
-        public string Numero { get; set; } // Número da localização da denúncia
-        public string Bairro { get; set; } // Bairro da localização da denúncia
-        public string Cidade { get; set; } // Cidade da localização da denúncia
-        public string Estado { get; set; } // Estado da localização da denúncia
-
-
-
-
+        public string Titulo { get; set; }
+        public string Descricao { get; set; }
+        public DateTime DataDenuncia { get; set; }
+        public string Status { get; set; }
+        public string Usuario { get; set; }
+        public string Localizacao { get; set; }
+        public string OrgaoPublico { get; set; }
     }
 }

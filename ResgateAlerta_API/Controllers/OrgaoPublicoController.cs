@@ -38,7 +38,8 @@ namespace ResgateAlerta.Controllers
                 {
                     IdOrgaoPublico = o.IdOrgaoPublico,
                     Nome = o.Nome,
-                    AreaAtuacao = o.AreaAtuacao
+                    Sigla = o.Sigla,
+                    Descricao = o.Descricao
                 })
                 .ToListAsync();
 
@@ -65,7 +66,8 @@ namespace ResgateAlerta.Controllers
             {
                 IdOrgaoPublico = orgao.IdOrgaoPublico,
                 Nome = orgao.Nome,
-                AreaAtuacao = orgao.AreaAtuacao
+                Sigla = orgao.Sigla,
+                Descricao = orgao.Descricao
             };
 
             return Ok(dto);
@@ -81,7 +83,7 @@ namespace ResgateAlerta.Controllers
         [ProducesResponseType((int)HttpStatusCode.Created)]
         public async Task<ActionResult<OrgaoPublicoResponse>> PostOrgaoPublico(OrgaoPublicoRequest request)
         {
-            var orgao = OrgaoPublico.Create(request.Nome, request.AreaAtuacao);
+            var orgao = OrgaoPublico.Create(request.Nome, request.Sigla, request.Descricao);
 
             _context.OrgaosPublicos.Add(orgao);
             await _context.SaveChangesAsync();
@@ -90,7 +92,8 @@ namespace ResgateAlerta.Controllers
             {
                 IdOrgaoPublico = orgao.IdOrgaoPublico,
                 Nome = orgao.Nome,
-                AreaAtuacao = orgao.AreaAtuacao
+                Sigla = orgao.Sigla,
+                Descricao = orgao.Descricao
             };
 
             return CreatedAtAction(nameof(GetOrgaoPublico), new { id = orgao.IdOrgaoPublico }, response);
@@ -112,7 +115,7 @@ namespace ResgateAlerta.Controllers
             if (orgao == null)
                 return NotFound();
 
-            orgao.AtualizarOrgaoPublico(request.Nome, request.AreaAtuacao); // método sugerido abaixo
+            orgao.AtualizaOrgaoPublico(request.Nome, request.Sigla, request.Descricao);
 
             _context.OrgaosPublicos.Update(orgao);
             await _context.SaveChangesAsync();
@@ -121,7 +124,8 @@ namespace ResgateAlerta.Controllers
             {
                 IdOrgaoPublico = orgao.IdOrgaoPublico,
                 Nome = orgao.Nome,
-                AreaAtuacao = orgao.AreaAtuacao
+                Sigla = orgao.Sigla,
+                Descricao = orgao.Descricao
             };
 
             return Ok(response);

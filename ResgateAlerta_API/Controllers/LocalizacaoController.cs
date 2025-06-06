@@ -36,21 +36,22 @@ namespace ResgateAlerta.Controllers
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         public async Task<ActionResult<IEnumerable<LocalizacaoResponse>>> GetLocalizacoes()
         {
-            var locais = await _context.Localizacoes
+            var localizacoes = await _context.Localizacoes
+                .Include(l => l.Bairro)
+                .Include(l => l.Cidade)
+                .Include(l => l.Estado)
                 .Select(l => new LocalizacaoResponse
                 {
-                    IdLocalizacao = l.IdLocalização,
+                    IdLocalizacao = l.IdLocalizacao,
                     Logradouro = l.Logradouro,
                     Numero = l.Numero,
                     Complemento = l.Complemento,
-                    Cep = l.Cep,
-                    //Latitude = l.Latitude,
-                    //Longitude = l.Longitude,
-                    IdBairro = l.IdBairro
+                    Bairro = l.Bairro.Nome,
+                    Cidade = l.Cidade.Nome,
+                    Estado = l.Estado.Nome
                 })
                 .ToListAsync();
-
-            return Ok(locais);
+            return localizacoes;
         }
 
         /// <summary>
@@ -69,24 +70,27 @@ namespace ResgateAlerta.Controllers
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<ActionResult<LocalizacaoResponse>> GetLocalizacao(Guid id)
         {
-            var local = await _context.Localizacoes.FindAsync(id);
+            var localizacao = await _context.Localizacoes
+                .Include(l => l.Bairro)
+                .Include(l => l.Cidade)
+                .Include(l => l.Estado)
+                .FirstOrDefaultAsync(l => l.IdLocalizacao == id);
 
-            if (local == null)
-                return NotFound();
-
-            var dto = new LocalizacaoResponse
+            if (localizacao == null)
             {
-                IdLocalizacao = local.IdLocalização,
-                Logradouro = local.Logradouro,
-                Numero = local.Numero,
-                Complemento = local.Complemento,
-                Cep = local.Cep,
-                //Latitude = local.Latitude,
-                //Longitude = local.Longitude,
-                IdBairro = local.IdBairro
-            };
+                return NotFound();
+            }
 
-            return Ok(dto);
+            return new LocalizacaoResponse
+            {
+                IdLocalizacao = localizacao.IdLocalizacao,
+                Logradouro = localizacao.Logradouro,
+                Numero = localizacao.Numero,
+                Complemento = localizacao.Complemento,
+                Bairro = localizacao.Bairro.Nome,
+                Cidade = localizacao.Cidade.Nome,
+                Estado = localizacao.Estado.Nome
+            };
         }
 
         /// <summary>
@@ -112,24 +116,34 @@ namespace ResgateAlerta.Controllers
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<ActionResult<LocalizacaoResponse>> PostLocalizacao(LocalizacaoRequest request)
         {
-            var local = Localizacao.Create(request.Logradouro, request.Numero, request.Complemento, request.Cep,  request.IdBairro);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            _context.Localizacoes.Add(local);
+            var bairro = await _context.Bairros.FindAsync(request.IdBairro);
+            var cidade = await _context.Cidades.FindAsync(request.IdCidade);
+            var estado = await _context.Estados.FindAsync(request.IdEstado);
+
+            if (bairro == null || cidade == null || estado == null)
+            {
+                return BadRequest("Bairro, Cidade ou Estado não encontrado.");
+            }
+
+            var localizacao = Localizacao.Create(bairro, cidade, estado, request.Logradouro, request.Numero, request.Complemento);
+            _context.Localizacoes.Add(localizacao);
             await _context.SaveChangesAsync();
 
-            var response = new LocalizacaoResponse
+            return new LocalizacaoResponse
             {
-                IdLocalizacao = local.IdLocalização,
-                Logradouro = local.Logradouro,
-                Numero = local.Numero,
-                Complemento = local.Complemento,
-                Cep = local.Cep,
-                //Latitude = local.Latitude,
-                //Longitude = local.Longitude,
-                IdBairro = local.IdBairro
+                IdLocalizacao = localizacao.IdLocalizacao,
+                Logradouro = localizacao.Logradouro,
+                Numero = localizacao.Numero,
+                Complemento = localizacao.Complemento,
+                Bairro = bairro.Nome,
+                Cidade = cidade.Nome,
+                Estado = estado.Nome
             };
-
-            return CreatedAtAction(nameof(GetLocalizacao), new { id = local.IdLocalização }, response);
         }
 
         /// <summary>
@@ -154,32 +168,33 @@ namespace ResgateAlerta.Controllers
         [HttpPut("{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<ActionResult<LocalizacaoResponse>> PutLocalizacao(Guid id, [FromBody] LocalizacaoRequest request)
+        public async Task<IActionResult> PutLocalizacao(Guid id, LocalizacaoRequest request)
         {
-            var local = await _context.Localizacoes.FindAsync(id);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            if (local == null)
+            var localizacao = await _context.Localizacoes.FindAsync(id);
+            if (localizacao == null)
+            {
                 return NotFound();
+            }
 
-            local.SetLogradouro(request.Logradouro);
-            local.SetNumero(request.Numero);
-            local.SetComplemento(request.Complemento);
-            local.SetCep(request.Cep);
-            local.SetIdBairro(request.IdBairro);
+            var bairro = await _context.Bairros.FindAsync(request.IdBairro);
+            var cidade = await _context.Cidades.FindAsync(request.IdCidade);
+            var estado = await _context.Estados.FindAsync(request.IdEstado);
 
+            if (bairro == null || cidade == null || estado == null)
+            {
+                return BadRequest("Bairro, Cidade ou Estado não encontrado.");
+            }
+
+            localizacao.AtualizaLocalizacao(bairro, cidade, estado, request.Logradouro, request.Numero, request.Complemento);
+            _context.Localizacoes.Update(localizacao);
             await _context.SaveChangesAsync();
 
-            var response = new LocalizacaoResponse
-            {
-                IdLocalizacao = local.IdLocalização,
-                Logradouro = local.Logradouro,
-                Numero = local.Numero,
-                Complemento = local.Complemento,
-                Cep = local.Cep,
-                IdBairro = local.IdBairro
-            };
-
-            return Ok(response);
+            return NoContent();
         }
 
 
@@ -194,12 +209,13 @@ namespace ResgateAlerta.Controllers
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> DeleteLocalizacao(Guid id)
         {
-            var local = await _context.Localizacoes.FindAsync(id);
-
-            if (local == null)
+            var localizacao = await _context.Localizacoes.FindAsync(id);
+            if (localizacao == null)
+            {
                 return NotFound();
+            }
 
-            _context.Localizacoes.Remove(local);
+            _context.Localizacoes.Remove(localizacao);
             await _context.SaveChangesAsync();
 
             return NoContent();

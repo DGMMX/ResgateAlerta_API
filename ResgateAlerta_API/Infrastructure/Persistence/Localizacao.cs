@@ -1,92 +1,90 @@
-﻿namespace EcoDenuncia.Infrastructure.Persistence
+﻿using System;
+using ResgateAlerta.Infrastructure.Persistence;
+
+namespace ResgateAlerta.Infrastructure.Persistence
 {
     public class Localizacao
     {
+        public Guid IdLocalizacao { get; private set; }
 
-        public Guid IdLocalização { get; private set; }
-        public string Logradouro { get; private set; }
-        public string Numero { get; private set; }
-        public string Complemento { get; private set; }
-        public string Cep { get; private set; }
-
-        // relacionamento com Bairro
+        // relacionamento com bairro
         public Guid IdBairro { get; private set; }
         public Bairro Bairro { get; set; }
 
-        // relacionamento com Denuncia
-        public ICollection<Denuncia> Denuncias { get; private set; } = new List<Denuncia>();
+        // relacionamento com cidade
+        public Guid IdCidade { get; private set; }
+        public Cidade Cidade { get; set; }
 
-        public Localizacao(string logradouro, string numero, string complemento, string cep, Guid idBairro)
+        // relacionamento com estado
+        public Guid IdEstado { get; private set; }
+        public Estado Estado { get; set; }
+
+        public string Logradouro { get; private set; }
+        public string Numero { get; private set; }
+        public string Complemento { get; private set; }
+
+        public Localizacao(Guid idBairro, Guid idCidade, Guid idEstado, string logradouro, string numero, string complemento)
         {
             ValidarLogradouro(logradouro);
             ValidarNumero(numero);
-            ValidarCep(cep);
-
-            IdLocalização = Guid.NewGuid();
+            ValidarComplemento(complemento);
+            IdLocalizacao = Guid.NewGuid();
+            IdBairro = idBairro;
+            IdCidade = idCidade;
+            IdEstado = idEstado;
             Logradouro = logradouro;
             Numero = numero;
             Complemento = complemento;
-            Cep = cep;
-
-            IdBairro = idBairro;
         }
-
-        public void SetLogradouro(string logradouro)
-        {
-            ValidarLogradouro(logradouro);
-            Logradouro = logradouro;
-        }
-
-        public void SetNumero(string numero)
-        {
-            ValidarNumero(numero);
-            Numero = numero;
-        }
-
-        public void SetComplemento(string complemento)
-        {
-            Complemento = complemento;
-        }
-
-        public void SetCep(string cep)
-        {
-            ValidarCep(cep);
-            Cep = cep;
-        }
-
-        public void SetIdBairro(Guid idBairro)
-        {
-            IdBairro = idBairro;
-        }
-
 
         private void ValidarLogradouro(string logradouro)
         {
             if (string.IsNullOrWhiteSpace(logradouro))
+            {
                 throw new Exception("Logradouro não pode ser vazio.");
-            if (logradouro.Length > 200)
-                throw new Exception("Logradouro deve ter no máximo 200 caracteres.");
+            }
+            if (logradouro.Length > 100)
+            {
+                throw new Exception("Logradouro deve ter no máximo 100 caracteres.");
+            }
         }
 
         private void ValidarNumero(string numero)
         {
             if (string.IsNullOrWhiteSpace(numero))
+            {
                 throw new Exception("Número não pode ser vazio.");
+            }
             if (numero.Length > 10)
+            {
                 throw new Exception("Número deve ter no máximo 10 caracteres.");
+            }
         }
 
-        private void ValidarCep(string cep)
+        private void ValidarComplemento(string complemento)
         {
-            if (string.IsNullOrWhiteSpace(cep))
-                throw new Exception("CEP não pode ser vazio.");
-            if (cep.Length != 8)
-                throw new Exception("CEP deve ter exatamente 8 caracteres.");
+            if (complemento != null && complemento.Length > 50)
+            {
+                throw new Exception("Complemento deve ter no máximo 50 caracteres.");
+            }
         }
-        internal static Localizacao Create(string logradouro, string numero, string complemento, string cep, Guid idBairro)
-        {
-            return new Localizacao(logradouro, numero, complemento, cep, idBairro);
 
+        public void AtualizaLocalizacao(Guid idBairro, Guid idCidade, Guid idEstado, string logradouro, string numero, string complemento)
+        {
+            IdBairro = idBairro;
+            IdCidade = idCidade;
+            IdEstado = idEstado;
+            ValidarLogradouro(logradouro);
+            ValidarNumero(numero);
+            ValidarComplemento(complemento);
+            Logradouro = logradouro;
+            Numero = numero;
+            Complemento = complemento;
+        }
+
+        internal static Localizacao Create(Guid idBairro, Guid idCidade, Guid idEstado, string logradouro, string numero, string complemento)
+        {
+            return new Localizacao(idBairro, idCidade, idEstado, logradouro, numero, complemento);
         }
     }
 }
