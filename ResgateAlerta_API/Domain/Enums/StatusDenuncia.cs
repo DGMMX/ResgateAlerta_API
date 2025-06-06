@@ -1,4 +1,4 @@
-﻿namespace EcoDenuncia.Domain.Enums
+﻿namespace ResgateAlerta.Domain.Enums
 {
     public enum StatusDenuncia
     {

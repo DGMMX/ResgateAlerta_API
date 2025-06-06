@@ -1,9 +1,9 @@
-ï»¿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace EcoDenuncia.Migrations
+namespace ResgateAlerta.Migrations
 {
     /// <inheritdoc />
     public partial class UpdateEstadoMapping : Migration
@@ -94,7 +94,7 @@ namespace EcoDenuncia.Migrations
                 name: "TBL_LOCALIZACAO",
                 columns: table => new
                 {
-                    IdLocalizaÃ§Ã£o = table.Column<Guid>(type: "RAW(16)", nullable: false),
+                    IdLocalização = table.Column<Guid>(type: "RAW(16)", nullable: false),
                     Logradouro = table.Column<string>(type: "NVARCHAR2(100)", maxLength: 100, nullable: false),
                     Numero = table.Column<string>(type: "NVARCHAR2(10)", maxLength: 10, nullable: false),
                     Complemento = table.Column<string>(type: "NVARCHAR2(50)", maxLength: 50, nullable: false),
@@ -103,7 +103,7 @@ namespace EcoDenuncia.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TBL_LOCALIZACAO", x => x.IdLocalizaÃ§Ã£o);
+                    table.PrimaryKey("PK_TBL_LOCALIZACAO", x => x.IdLocalização);
                     table.ForeignKey(
                         name: "FK_TBL_LOCALIZACAO_TBL_BAIRRO_IdBairro",
                         column: x => x.IdBairro,
@@ -122,7 +122,7 @@ namespace EcoDenuncia.Migrations
                     IdOrgaoPublico = table.Column<Guid>(type: "RAW(16)", nullable: false),
                     DataHora = table.Column<DateTime>(type: "TIMESTAMP(7)", nullable: false),
                     Descricao = table.Column<string>(type: "NVARCHAR2(250)", maxLength: 250, nullable: false),
-                    LocalizacaoIdLocalizaÃ§Ã£o = table.Column<Guid>(type: "RAW(16)", nullable: true),
+                    LocalizacaoIdLocalização = table.Column<Guid>(type: "RAW(16)", nullable: true),
                     OrgaoPublicoIdOrgaoPublico = table.Column<Guid>(type: "RAW(16)", nullable: true)
                 },
                 constraints: table =>
@@ -132,13 +132,13 @@ namespace EcoDenuncia.Migrations
                         name: "FK_TBL_DENUNCIAS_TBL_LOCALIZACAO_IdLocalizacao",
                         column: x => x.IdLocalizacao,
                         principalTable: "TBL_LOCALIZACAO",
-                        principalColumn: "IdLocalizaÃ§Ã£o",
+                        principalColumn: "IdLocalização",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_TBL_DENUNCIAS_TBL_LOCALIZACAO_LocalizacaoIdLocalizaÃ§Ã£o",
-                        column: x => x.LocalizacaoIdLocalizaÃ§Ã£o,
+                        name: "FK_TBL_DENUNCIAS_TBL_LOCALIZACAO_LocalizacaoIdLocalização",
+                        column: x => x.LocalizacaoIdLocalização,
                         principalTable: "TBL_LOCALIZACAO",
-                        principalColumn: "IdLocalizaÃ§Ã£o");
+                        principalColumn: "IdLocalização");
                     table.ForeignKey(
                         name: "FK_TBL_DENUNCIAS_TBL_ORGAO_PUBLICO_IdOrgaoPublico",
                         column: x => x.IdOrgaoPublico,
@@ -210,9 +210,9 @@ namespace EcoDenuncia.Migrations
                 column: "IdUsuario");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TBL_DENUNCIAS_LocalizacaoIdLocalizaÃ§Ã£o",
+                name: "IX_TBL_DENUNCIAS_LocalizacaoIdLocalização",
                 table: "TBL_DENUNCIAS",
-                column: "LocalizacaoIdLocalizaÃ§Ã£o");
+                column: "LocalizacaoIdLocalização");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TBL_DENUNCIAS_OrgaoPublicoIdOrgaoPublico",

@@ -1,8 +1,10 @@
-﻿namespace EcoDenuncia.Infrastructure.Persistence
+﻿using System;
+using ResgateAlerta.Infrastructure.Persistence;
+
+namespace ResgateAlerta.Infrastructure.Persistence
 {
     public class Denuncia
     {
-
         public Guid IdDenuncia { get; private set; }
 
         // relacionamento com usuario
@@ -22,7 +24,6 @@
 
         public Denuncia(Guid idUsuario, Guid idLocalizacao, Guid idOrgaoPublico, DateTime dataHora, string descricao)
         {
-
             ValidarDescricao(descricao);
             IdDenuncia = Guid.NewGuid();
             IdUsuario = idUsuario;
@@ -30,7 +31,6 @@
             IdOrgaoPublico = idOrgaoPublico;
             DataHora = dataHora;
             Descricao = descricao;
-
         }
 
         private void ValidarDescricao(string descricao)
@@ -43,8 +43,6 @@
             {
                 throw new Exception("Descrição deve ter no máximo 250 caracteres.");
             }
-
-
         }
 
         public void AtualizaDenuncia(Guid idUsuario, Guid idLocalizacao, Guid idOrgaoPublico, DateTime dataHora, string descricao)

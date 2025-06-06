@@ -1,8 +1,8 @@
-ï»¿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace EcoDenuncia.Migrations
+namespace ResgateAlerta.Migrations
 {
     /// <inheritdoc />
     public partial class UpdateLocalizacaoMapping : Migration
@@ -40,7 +40,7 @@ namespace EcoDenuncia.Migrations
                 newName: "id_bairro");
 
             migrationBuilder.RenameColumn(
-                name: "IdLocalizaÃ§Ã£o",
+                name: "IdLocalização",
                 table: "TBL_LOCALIZACAO",
                 newName: "id_localizacao");
 
@@ -93,7 +93,7 @@ namespace EcoDenuncia.Migrations
             migrationBuilder.RenameColumn(
                 name: "id_localizacao",
                 table: "TBL_LOCALIZACAO",
-                newName: "IdLocalizaÃ§Ã£o");
+                newName: "IdLocalização");
 
             migrationBuilder.RenameIndex(
                 name: "IX_TBL_LOCALIZACAO_id_bairro",

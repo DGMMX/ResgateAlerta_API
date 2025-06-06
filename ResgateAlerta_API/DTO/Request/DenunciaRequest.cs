@@ -1,4 +1,4 @@
-﻿namespace EcoDenuncia.DTO.Request
+﻿namespace ResgateAlerta.DTO.Request
 {
     public class DenunciaRequest
     {

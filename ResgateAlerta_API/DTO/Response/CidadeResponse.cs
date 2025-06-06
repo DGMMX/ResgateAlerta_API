@@ -1,4 +1,4 @@
-﻿namespace EcoDenuncia.DTO.Response
+﻿namespace ResgateAlerta.DTO.Response
 {
     public class CidadeResponse
     {

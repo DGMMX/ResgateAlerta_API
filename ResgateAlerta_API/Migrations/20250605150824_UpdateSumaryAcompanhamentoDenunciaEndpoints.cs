@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace EcoDenuncia.Migrations
+namespace ResgateAlerta.Migrations
 {
     /// <inheritdoc />
     public partial class UpdateSumaryAcompanhamentoDenunciaEndpoints : Migration
