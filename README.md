@@ -77,14 +77,6 @@ GET	/api/Bairro/{id}	Detalha um bairro por ID
 PUT	/api/Bairro/{id}	Atualiza dados de um bairro
 DELETE	/api/Bairro/{id}	Remove um bairro
 
-### 📊 Acompanhamento de Denúncia
-Método	Rota	Descrição
-GET	/api/AcompanhamentoDenuncia	Lista todos os acompanhamentos
-POST	/api/AcompanhamentoDenuncia	Cria novo acompanhamento
-GET	/api/AcompanhamentoDenuncia/{id}	Detalha um acompanhamento por ID
-PUT	/api/AcompanhamentoDenuncia/{id}	Atualiza dados de um acompanhamento
-DELETE	/api/AcompanhamentoDenuncia/{id}	Remove um acompanhamento
-
 ## Instruções de Execução
 
 1. Clone o projeto:
